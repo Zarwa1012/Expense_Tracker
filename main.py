@@ -1,30 +1,27 @@
 from fastmcp import FastMCP
 import mysql.connector
 import os
-import json
-
 
 # ============================================================
 # MYSQL CONFIGURATION
 # ============================================================
 
-DB_CONFIG = {
-    "host": os.getenv("DB_HOST"),
-    "port": int(os.getenv("DB_PORT", "26238")),
-    "user": os.getenv("DB_USER"),
-    "password": os.getenv("DB_PASSWORD"),
-    "database": os.getenv("DB_NAME", "defaultdb")
-}
+DB_HOST = "expense-tracker-zarwaaslam1012-8d30.b.aivencloud.com"
+DB_PORT = 26238
+DB_USER = "avnadmin"
+DB_PASSWORD = "YOUR_AIVEN_PASSWORD"
+DB_NAME = "defaultdb"
 
-
-# ============================================================
-# DATABASE CONNECTION
-# ============================================================
 
 def get_db():
-    return mysql.connector.connect(**DB_CONFIG)
-
-
+    return mysql.connector.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME,
+        ssl_disabled=False
+    )
 # ============================================================
 # DATABASE INITIALIZATION
 # ============================================================

@@ -3,25 +3,42 @@ import mysql.connector
 import os
 
 # ============================================================
-# MYSQL CONFIGURATION
+# DATABASE CONFIGURATION
 # ============================================================
 
-DB_HOST = "expense-tracker-zarwaaslam1012-8d30.b.aivencloud.com"
-DB_PORT = 26238
-DB_USER = "avnadmin"
-DB_PASSWORD = "YOUR_AIVEN_PASSWORD"
-DB_NAME = "defaultdb"
+DB_HOST = os.getenv("DB_HOST") 
+DB_PORT = int(os.getenv("DB_PORT", "26238"))
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD") 
+DB_NAME = os.getenv("DB_NAME", "defaultdb")  
 
+
+# ============================================================
+# DATABASE CONNECTION
+# ============================================================
 
 def get_db():
+    """Create and return a MySQL database connection."""
+
+    if not DB_HOST:
+        raise RuntimeError("DB_HOST environment variable is not set.")
+
+    if not DB_USER:
+        raise RuntimeError("DB_USER environment variable is not set.")
+
+    if not DB_PASSWORD:
+        raise RuntimeError("DB_PASSWORD environment variable is not set.")
+
     return mysql.connector.connect(
         host=DB_HOST,
         port=DB_PORT,
         user=DB_USER,
         password=DB_PASSWORD,
         database=DB_NAME,
-        ssl_disabled=False
+        ssl_disabled=False,
+        connection_timeout=15
     )
+
 # ============================================================
 # DATABASE INITIALIZATION
 # ============================================================

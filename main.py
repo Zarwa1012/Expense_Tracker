@@ -9,17 +9,12 @@ import json
 # ============================================================
 
 DB_CONFIG = {
-    "host": "localhost",
-    "port": 3306,   
-    "user": "root",
-    "password": "MySQL@000",
-    "database": "expense_tracker"
+    "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT", "26238")),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME", "defaultdb")
 }
-
-CATEGORIES_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "categories.json"
-)
 
 
 # ============================================================
@@ -270,35 +265,15 @@ def edit_expenses(
             "message": "Expense not found"
         }
 
-    date = (
-        date
-        if date is not None
-        else current["date"]
-    )
-
-    amount = (
-        amount
-        if amount is not None
-        else current["amount"]
-    )
-
-    category = (
-        category
-        if category is not None
-        else current["category"]
-    )
-
+    date = date if date is not None else current["date"]
+    amount = amount if amount is not None else current["amount"]
+    category = category if category is not None else current["category"]
     sub_category = (
         sub_category
         if sub_category is not None
         else current["sub_category"]
     )
-
-    note = (
-        note
-        if note is not None
-        else current["note"]
-    )
+    note = note if note is not None else current["note"]
 
     cursor.execute("""
         UPDATE expenses
@@ -610,29 +585,10 @@ def edit_income(
             "message": "Income not found"
         }
 
-    date = (
-        date
-        if date is not None
-        else current["date"]
-    )
-
-    amount = (
-        amount
-        if amount is not None
-        else current["amount"]
-    )
-
-    source = (
-        source
-        if source is not None
-        else current["source"]
-    )
-
-    note = (
-        note
-        if note is not None
-        else current["note"]
-    )
+    date = date if date is not None else current["date"]
+    amount = amount if amount is not None else current["amount"]
+    source = source if source is not None else current["source"]
+    note = note if note is not None else current["note"]
 
     cursor.execute("""
         UPDATE income
@@ -1232,6 +1188,11 @@ def financial_insights(
 def categories():
     """Return available expense categories."""
 
+    CATEGORIES_PATH = os.path.join(
+        os.path.dirname(__file__),
+        "categories.json"
+    )
+
     with open(
         CATEGORIES_PATH,
         "r",
@@ -1245,4 +1206,8 @@ def categories():
 # ============================================================
 
 if __name__ == "__main__":
-    mcp.run(transport="http" , host = "0.0.0.0" , port=8000 ) 
+    mcp.run(
+        transport="http",
+        host="0.0.0.0",
+        port=8000
+    )
